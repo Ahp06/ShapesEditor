@@ -1,11 +1,20 @@
 package graphics.shapes.ui;
 
+import java.awt.AWTException;
 import java.awt.Color;
+import java.awt.Rectangle;
+import java.awt.Robot;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Path;
 import java.util.ArrayList;
 
+import javax.imageio.ImageIO;
 import javax.swing.JColorChooser;
+import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
@@ -25,12 +34,16 @@ import graphics.shapes.attributes.SelectionAttributes;
 
 public class Menu extends JMenuBar {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	private JFrame frame;
 
 	public Menu(JFrame frame) {
 		this.frame = frame;
 	}
-	
+
 	public JFrame getFrame() {
 		return this.frame;
 	}
@@ -40,32 +53,33 @@ public class Menu extends JMenuBar {
 	}
 
 	public void initMenu() {
-		
-		// Création du menu 
-		
+
+		// Création du menu
+
 		JMenu file = new JMenu("File");
 		JMenuItem newFile = new JMenuItem("New");
-		JMenuItem screenshot = new JMenuItem("Screenshot"); 
+		JMenuItem screenshot = new JMenuItem("Screenshot");
 		JMenuItem rename = new JMenuItem("Rename");
-		JMenuItem copy = new JMenuItem("Copy & paste"); 
+		JMenuItem copy = new JMenuItem("Copy & paste");
 		JMenuItem clear = new JMenuItem("Clear");
 		JMenuItem delete = new JMenuItem("Delete");
-		JMenuItem importImg = new JMenuItem("Import an image"); 
+		JMenuItem importImg = new JMenuItem("Import an image");
 		JMenuItem exit = new JMenuItem("Exit");
+		JFileChooser fc = new JFileChooser();
 
 		file.add(newFile);
 		file.add(new JSeparator());
-		file.add(screenshot); 
-		file.add(new JSeparator());		
+		file.add(screenshot);
+		file.add(new JSeparator());
 		file.add(rename);
 		file.add(new JSeparator());
-		file.add(copy); 
-		file.add(new JSeparator()); 
+		file.add(copy);
+		file.add(new JSeparator());
 		file.add(clear);
 		file.add(new JSeparator());
 		file.add(delete);
 		file.add(new JSeparator());
-		file.add(importImg); 
+		file.add(importImg);
 		file.add(new JSeparator());
 		file.add(exit);
 
@@ -100,8 +114,8 @@ public class Menu extends JMenuBar {
 		this.add(shapesOptions);
 		this.add(style);
 		this.add(others);
-		
-		// Fin création et ajout des événements 
+
+		// Fin création et ajout des événements
 
 		clear.addActionListener(new ActionListener() {
 			Editor editor = (Editor) getFrame();
@@ -141,7 +155,6 @@ public class Menu extends JMenuBar {
 			}
 		});
 
-
 		exit.addActionListener(new ActionListener() {
 			JFrame frame = getFrame();
 
@@ -159,14 +172,14 @@ public class Menu extends JMenuBar {
 			}
 
 		});
-		
+
 		copy.addActionListener(new ActionListener() {
 
 			public void actionPerformed(ActionEvent e) {
 				Editor editor = (Editor) getFrame();
 				SelectionAttributes sa = null;
-				SCollection copies = new SCollection(); 
-				
+				SCollection copies = new SCollection();
+
 				for (Shape s : editor.model.shapeList) {
 					try {
 						sa = (SelectionAttributes) s.getAttributes(SelectionAttributes.ID);
@@ -181,19 +194,18 @@ public class Menu extends JMenuBar {
 						} catch (ShapeException e1) {
 							// TODO Auto-generated catch block
 							e1.printStackTrace();
-						} 
+						}
 					}
-					
+
 				}
-				
-				editor.model.shapeList.addAll(copies.shapeList); 
+
+				editor.model.shapeList.addAll(copies.shapeList);
 				editor.sview.repaint();
-				
 
 			}
 
 		});
-		
+
 		rename.addActionListener(new ActionListener() {
 
 			public void actionPerformed(ActionEvent e) {
@@ -213,11 +225,11 @@ public class Menu extends JMenuBar {
 
 				Editor editor = (Editor) getFrame();
 				SelectionAttributes sa = null;
-				ColorAttributes ca = null ; 
+				ColorAttributes ca = null;
 				ArrayList<Shape> shapesSelected = new ArrayList<Shape>();
 				Color colorChoosen = JColorChooser.showDialog(null, "Choose a new Color for this shape", null);
-				SCollection composite = null ; 
-				
+				SCollection composite = null;
+
 				for (Shape s : editor.model.shapeList) {
 					try {
 						sa = (SelectionAttributes) s.getAttributes(SelectionAttributes.ID);
@@ -229,20 +241,20 @@ public class Menu extends JMenuBar {
 
 					if (sa.isSelected()) {
 						shapesSelected.add(s);
-						ca = new ColorAttributes(true,true,colorChoosen,colorChoosen); 
+						ca = new ColorAttributes(true, true, colorChoosen, colorChoosen);
 						s.addAttributes(ca);
 						editor.sview.repaint();
 					}
-					
-					if(sa.isSelected() && s.getClass()==(new SCollection()).getClass()){
-						composite = (SCollection) s ; 
 
-						for(int i = 0 ; i < composite.shapeList.size() ; i++){
-							composite.shapeList.get(i).addAttributes(ca); 
+					if (sa.isSelected() && s.getClass() == (new SCollection()).getClass()) {
+						composite = (SCollection) s;
+
+						for (int i = 0; i < composite.shapeList.size(); i++) {
+							composite.shapeList.get(i).addAttributes(ca);
 						}
 					}
 				}
-				
+
 			}
 		});
 
@@ -297,7 +309,7 @@ public class Menu extends JMenuBar {
 		});
 
 		help.addActionListener(new ActionListener() {
-			JFrame helpFrame = new JFrame("showMessageDialog"); 
+			JFrame helpFrame = new JFrame("showMessageDialog");
 
 			public void actionPerformed(ActionEvent e) {
 				String helpMenu = " Draw : ALT down / Left Click " + "\n Delete : Click + SUPPR"
@@ -317,26 +329,36 @@ public class Menu extends JMenuBar {
 				JOptionPane.showMessageDialog(aboutUsFrame, helpMenu, "About us", JOptionPane.INFORMATION_MESSAGE);
 			}
 		});
-		
+
 		screenshot.addActionListener(new ActionListener() {
-			
+
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				// TODO Auto-generated method stub
-				
+				JFrame frame = getFrame();
+				BufferedImage bufferedImage = new BufferedImage(frame.getWidth(), frame.getHeight(), BufferedImage.TYPE_INT_RGB);
+				frame.paint(bufferedImage.getGraphics());
+				int retVal = fc.showSaveDialog(null);
+				if (retVal == JFileChooser.APPROVE_OPTION) {
+					File file = fc.getSelectedFile();
+					try {
+						ImageIO.write(bufferedImage, "jpg", file);
+					} catch (IOException e1) {
+						// TODO Auto-generated catch block
+						e1.printStackTrace();
+					}
+				}
 			}
+
 		});
-		
+
 		importImg.addActionListener(new ActionListener() {
-			
+
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				// TODO Auto-generated method stub
-				
+
 			}
 		});
-		
-		
 
 	}
 
