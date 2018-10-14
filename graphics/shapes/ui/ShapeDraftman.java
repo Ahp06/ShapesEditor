@@ -16,6 +16,8 @@ import graphics.shapes.attributes.SelectionAttributes;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Rectangle;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class ShapeDraftman implements ShapeVisitor {
 
@@ -163,7 +165,19 @@ public class ShapeDraftman implements ShapeVisitor {
 
 	@Override
 	public void visitImage(SImage sImage) {
-		// TODO Auto-generated method stub
+            try {
+                this.g.setColor(Color.BLACK);
+                
+                g.drawImage(sImage.getBufferedImage(),sImage.getLoc().x,sImage.getLoc().y, null);
+                
+                SelectionAttributes sa = (SelectionAttributes) sImage.getAttributes(SelectionAttributes.ID);
+                
+                if (sa.isSelected() == true)
+                    this.drawHandler(sImage.getBounds());
+            } catch (ShapeException ex) {
+                Logger.getLogger(ShapeDraftman.class.getName()).log(Level.SEVERE, null, ex);
+            }
+
 		
 	}
 	

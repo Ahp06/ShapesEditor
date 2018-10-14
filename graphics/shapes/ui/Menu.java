@@ -16,6 +16,7 @@ import javax.swing.JSeparator;
 import graphics.shapes.SCircle;
 import graphics.shapes.SCollection;
 import graphics.shapes.SRectangle;
+import graphics.shapes.SImage;
 import graphics.shapes.SText;
 import graphics.shapes.Shape;
 import graphics.shapes.ShapeException;
@@ -41,7 +42,7 @@ public class Menu extends JMenuBar {
 
 	public void initMenu() {
 		
-		// Création du menu 
+		// Crï¿½ation du menu 
 		
 		JMenu file = new JMenu("File");
 		JMenuItem newFile = new JMenuItem("New");
@@ -101,7 +102,7 @@ public class Menu extends JMenuBar {
 		this.add(style);
 		this.add(others);
 		
-		// Fin création et ajout des événements 
+		// Fin crï¿½ation et ajout des ï¿½vï¿½nements 
 
 		clear.addActionListener(new ActionListener() {
 			Editor editor = (Editor) getFrame();
@@ -329,10 +330,15 @@ public class Menu extends JMenuBar {
 		
 		importImg.addActionListener(new ActionListener() {
 			
-			@Override
+			JFrame frame = getFrame();
+			SCollection model = ((Editor) frame).model;
+
 			public void actionPerformed(ActionEvent e) {
-				// TODO Auto-generated method stub
-				
+				SImage si = new SImage();
+				si.addAttributes(new SelectionAttributes());
+
+				model.add(si);
+				frame.getContentPane().repaint();
 			}
 		});
 		

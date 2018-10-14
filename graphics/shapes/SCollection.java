@@ -8,6 +8,7 @@ import java.util.Iterator;
 
 import graphics.shapes.attributes.ColorAttributes;
 import graphics.shapes.attributes.SelectionAttributes;
+import graphics.shapes.ui.SImage;
 
 public class SCollection extends Shape {
 
