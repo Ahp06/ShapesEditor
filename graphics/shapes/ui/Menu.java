@@ -12,6 +12,8 @@ import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JSeparator;
+import javax.swing.JFileChooser;
+import javax.swing.filechooser.FileNameExtensionFilter;
 
 import graphics.shapes.SCircle;
 import graphics.shapes.SCollection;
@@ -23,6 +25,9 @@ import graphics.shapes.ShapeException;
 import graphics.shapes.attributes.ColorAttributes;
 import graphics.shapes.attributes.FontAttributes;
 import graphics.shapes.attributes.SelectionAttributes;
+import java.io.IOException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class Menu extends JMenuBar {
 
@@ -334,11 +339,23 @@ public class Menu extends JMenuBar {
 			SCollection model = ((Editor) frame).model;
 
 			public void actionPerformed(ActionEvent e) {
-				SImage si = new SImage();
-				si.addAttributes(new SelectionAttributes());
+				try {
+                    Editor editor = (Editor) getFrame();
 
-				model.add(si);
-				frame.getContentPane().repaint();
+                    JFileChooser chooser = new JFileChooser();
+                    FileNameExtensionFilter filter = new FileNameExtensionFilter(
+                            "JPG & GIF Images", "jpg", "gif");
+                    chooser.setFileFilter(filter);
+                    int returnVal = chooser.showDialog(null, "Choose an Image");
+
+                    SImage si = new SImage(chooser.getSelectedFile().getAbsolutePath());
+                    si.addAttributes(new SelectionAttributes());
+
+                    model.add(si);
+                    frame.getContentPane().repaint();
+                } catch (IOException ex) {
+                    Logger.getLogger(Menu.class.getName()).log(Level.SEVERE, null, ex);
+                }
 			}
 		});
 		
