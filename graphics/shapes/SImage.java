@@ -25,16 +25,6 @@ public class SImage extends Shape{
 		this.imgPath = path ; 
                 this.bi = ImageIO.read(new File(this.imgPath));
 	}
-        
-        public SImage(){
-		this.loc = new Point(0,0); 
-		this.imgPath = "C:\\Users\\Phil\\Documents\\NetBeansProjects\\ShapesEditor\\res\\sample.jpg";
-            try {
-                this.bi = ImageIO.read(new File(this.imgPath));
-            } catch (IOException ex) {
-                Logger.getLogger(SImage.class.getName()).log(Level.SEVERE, null, ex);
-            }
-	}
 
 	@Override
 	public void setLoc(Point p) {
